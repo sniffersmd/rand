@@ -1,0 +1,49 @@
+#include <iostream>
+#include "gauss2024.h"
+
+using namespace Matrix1;
+
+int main() {
+    setlocale(LC_ALL, "RU");
+
+    float** Coefficients = nullptr;
+    float** RightPart = nullptr;
+    float** Solution = nullptr;
+    float** AbsError = nullptr;
+    float** OutReport = nullptr;
+    unsigned var = 2, order = 10 + var;
+    unsigned i, j;
+
+    Coefficients = GenerateMatrix(order, order, -1.0f, 1.0f);
+    RightPart = GenerateMatrix(order, 1, -8.0f, 8.0f); 
+    OutReport = CreateMatrix(order, order + 3);
+
+    Solution = gaussSLAE(Coefficients, RightPart, order);
+    if (Solution != nullptr) {
+        AbsError = MatrixMultiply(Coefficients, order, order, Solution, order, 1);
+        for (i = 0; i < order; i++) AbsError[i][0] -= RightPart[i][0];
+        std::cout << "Решение найдено!" << std::endl;
+    }
+    else {
+        std::cout << "Решение не найдено!" << std::endl;
+    }
+
+    for (i = 0; i < order; i++) {
+        for (j = 0; j < order; j++) {
+            OutReport[i][j] = Coefficients[i][j];
+        }
+        OutReport[i][order] = RightPart[i][0];
+        OutReport[i][order + 1] = Solution != nullptr ? AbsError[i][0] : NAN;
+        OutReport[i][order + 2] = Solution != nullptr ? Solution[i][0] : NAN;
+    }
+
+    ExportMatrix("OutReport.txt", OutReport, order, order + 3);
+
+    DeleteMatrix(Coefficients, order);
+    DeleteMatrix(RightPart, order);
+    DeleteMatrix(Solution, order);
+    DeleteMatrix(AbsError, order);
+    DeleteMatrix(OutReport, order);
+
+    return 0;
+}
