@@ -1,0 +1,29 @@
+#include <iostream>
+#include <Windows.h>
+#include "prime2024.h"
+#include <time.h>
+
+using std::cout;
+using std::endl;
+
+using namespace prime2024;
+
+int main() {
+	setlocale(LC_ALL, "RU");
+	SetConsoleOutputCP(CP_UTF8);
+	unsigned i, N(1000000000), count(0);
+	clock_t t;
+	double T;
+	t = clock();
+	for (i = 1; i <= N; ++i)
+		if (isPrime_M(i)) {
+			++count;
+		}
+	T = double(clock() - t) / CLOCKS_PER_SEC;
+	cout << "\nСуществует " << count << " простых чисел, не превосходящих " << N;
+	//cout << "\nops_arithms = " << ops_arithm << std::endl
+	//	<< "ops_comp = " << ops_comp << std::endl
+	//	<< "ops_sqrt = " << ops_sqrt << std::endl;
+	cout << "\nВремя работы цикла составило " << T << " секунд" << endl;
+
+}
